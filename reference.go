@@ -19,3 +19,21 @@ type Reference struct {
 	// This object cannot be extended with additional properties and any 
 	// properties added SHALL be ignored.
 }
+
+// This object cannot be extended with additional properties and any properties added SHALL be ignored.
+
+// Reference Object Example
+// {
+// 	"$ref": "#/components/schemas/Pet"
+// }
+// $ref: '#/components/schemas/Pet'
+// Relative Schema Document Example
+// {
+//   "$ref": "Pet.json"
+// }
+// $ref: Pet.yaml
+// Relative Documents With Embedded Schema Example
+// {
+//   "$ref": "definitions.json#/Pet"
+// }
+// $ref: definitions.yaml#/Pet

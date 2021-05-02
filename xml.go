@@ -32,3 +32,243 @@ type XML struct {
 	Wrapped string `json:"wrapped,omitempty"`
 	// This object MAY be extended with Specification Extensions.
 }
+
+// XML Object Examples
+// The examples of the XML object definitions are included inside a property definition of a Schema Object with a sample of the XML representation of it.
+
+// No XML Element
+// Basic string property:
+
+// {
+//     "animals": {
+//         "type": "string"
+//     }
+// }
+// animals:
+//   type: string
+// <animals>...</animals>
+// Basic string array property (wrapped is false by default):
+
+// {
+//     "animals": {
+//         "type": "array",
+//         "items": {
+//             "type": "string"
+//         }
+//     }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+// <animals>...</animals>
+// <animals>...</animals>
+// <animals>...</animals>
+// XML Name Replacement
+// {
+//   "animals": {
+//     "type": "string",
+//     "xml": {
+//       "name": "animal"
+//     }
+//   }
+// }
+// animals:
+//   type: string
+//   xml:
+//     name: animal
+// <animal>...</animal>
+// XML Attribute, Prefix and Namespace
+// In this example, a full model definition is shown.
+
+// {
+//   "Person": {
+//     "type": "object",
+//     "properties": {
+//       "id": {
+//         "type": "integer",
+//         "format": "int32",
+//         "xml": {
+//           "attribute": true
+//         }
+//       },
+//       "name": {
+//         "type": "string",
+//         "xml": {
+//           "namespace": "http://example.com/schema/sample",
+//           "prefix": "sample"
+//         }
+//       }
+//     }
+//   }
+// }
+// Person:
+//   type: object
+//   properties:
+//     id:
+//       type: integer
+//       format: int32
+//       xml:
+//         attribute: true
+//     name:
+//       type: string
+//       xml:
+//         namespace: http://example.com/schema/sample
+//         prefix: sample
+// <Person id="123">
+//     <sample:name xmlns:sample="http://example.com/schema/sample">example</sample:name>
+// </Person>
+// XML Arrays
+// Changing the element names:
+
+// {
+//   "animals": {
+//     "type": "array",
+//     "items": {
+//       "type": "string",
+//       "xml": {
+//         "name": "animal"
+//       }
+//     }
+//   }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+//     xml:
+//       name: animal
+// <animal>value</animal>
+// <animal>value</animal>
+// The external name property has no effect on the XML:
+
+// {
+//   "animals": {
+//     "type": "array",
+//     "items": {
+//       "type": "string",
+//       "xml": {
+//         "name": "animal"
+//       }
+//     },
+//     "xml": {
+//       "name": "aliens"
+//     }
+//   }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+//     xml:
+//       name: animal
+//   xml:
+//     name: aliens
+// <animal>value</animal>
+// <animal>value</animal>
+// Even when the array is wrapped, if a name is not explicitly defined, the same name will be used both internally and externally:
+
+// {
+//   "animals": {
+//     "type": "array",
+//     "items": {
+//       "type": "string"
+//     },
+//     "xml": {
+//       "wrapped": true
+//     }
+//   }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+//   xml:
+//     wrapped: true
+// <animals>
+//   <animals>value</animals>
+//   <animals>value</animals>
+// </animals>
+// To overcome the naming problem in the example above, the following definition can be used:
+
+// {
+//   "animals": {
+//     "type": "array",
+//     "items": {
+//       "type": "string",
+//       "xml": {
+//         "name": "animal"
+//       }
+//     },
+//     "xml": {
+//       "wrapped": true
+//     }
+//   }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+//     xml:
+//       name: animal
+//   xml:
+//     wrapped: true
+// <animals>
+//   <animal>value</animal>
+//   <animal>value</animal>
+// </animals>
+// Affecting both internal and external names:
+
+// {
+//   "animals": {
+//     "type": "array",
+//     "items": {
+//       "type": "string",
+//       "xml": {
+//         "name": "animal"
+//       }
+//     },
+//     "xml": {
+//       "name": "aliens",
+//       "wrapped": true
+//     }
+//   }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+//     xml:
+//       name: animal
+//   xml:
+//     name: aliens
+//     wrapped: true
+// <aliens>
+//   <animal>value</animal>
+//   <animal>value</animal>
+// </aliens>
+// If we change the external element but not the internal ones:
+
+// {
+//   "animals": {
+//     "type": "array",
+//     "items": {
+//       "type": "string"
+//     },
+//     "xml": {
+//       "name": "aliens",
+//       "wrapped": true
+//     }
+//   }
+// }
+// animals:
+//   type: array
+//   items:
+//     type: string
+//   xml:
+//     name: aliens
+//     wrapped: true
+// <aliens>
+//   <aliens>value</aliens>
+//   <aliens>value</aliens>
+// </aliens>

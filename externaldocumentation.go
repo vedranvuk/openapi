@@ -15,3 +15,11 @@ type ExternalDocumentation struct {
 	URL string `json:"url,omitempty"`
 	// This object MAY be extended with Specification Extensions.
 }
+
+// External Documentation Object Example
+// {
+//   "description": "Find more info here",
+//   "url": "https://example.com"
+// }
+// description: Find more info here
+// url: https://example.com
