@@ -45,6 +45,10 @@ type Components struct {
 	//
 	// An object to hold reusable Callback Objects.
 	Callbacks map[string]interface{} `json:"callbacks,omitempty"`
+	// Holds Map[string, Path Item Object | Reference Object]
+	//
+	// An object to hold reusable Path Item Object.
+	PathItems map[string]interface{}
 
 	// This object MAY be extended with Specification Extensions.
 }

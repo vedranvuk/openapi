@@ -11,6 +11,8 @@ package openapi
 type Info struct {
 	// REQUIRED. The title of the API.
 	Title string `json:"title,omitempty"`
+	// A short summary of the API.
+	Summary string `json:"summary,omitempty"`
 	// A short description of the API. CommonMark syntax MAY be used for rich
 	// text representation.
 	Description string `json:"description,omitempty"`
@@ -53,3 +55,5 @@ type Info struct {
 //   name: Apache 2.0
 //   url: https://www.apache.org/licenses/LICENSE-2.0.html
 // version: 1.0.1
+
+

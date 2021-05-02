@@ -15,12 +15,25 @@ type OpenAPI struct {
 	// REQUIRED. Provides metadata about the API. The metadata MAY be used by
 	// tooling as required.
 	Info *Info `json:"info,omitempty"`
+	// The default value for the $schema keyword within Schema Objects contained
+	// within this OAS document. This MUST be in the form of a URI.
+	JsonSchemaDialect string `json:"jsonSchemaDialect,omitempty"`
 	// An array of Server Objects, which provide connectivity information to a
 	// target server. If the servers property is not provided, or is an empty
 	// array, the default value would be a Server Object with a url value of /.
 	Servers []*Server `json:"servers,omitempty"`
 	// REQUIRED. The available paths and operations for the API.
 	Paths *Paths `json:"paths,omitempty"`
+	// The incoming webhooks that MAY be received as part of this API and that
+	// the API consumer MAY choose to implement. Closely related to the 
+	// callbacks feature, this section describes requests initiated other than 
+	// by an API call, for example by an out of band registration. The key name
+	// is a unique string to refer to each webhook, while the 
+	// (optionally referenced) Path Item Object describes a request that may be
+	// initiated by the API provider and the expected responses. 
+	// An example is available: 
+	// https://github.com/OAI/OpenAPI-Specification/blob/3.1.0/examples/v3.1/webhook-example.yaml
+	WebHooks map[string]interface{} `json:"webhooks,omitempty"`
 	// An element to hold various schemas for the specification.
 	Components *Components `json:"components,omitempty"`
 	// A declaration of which security mechanisms can be used across the API.

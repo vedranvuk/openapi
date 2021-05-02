@@ -5,97 +5,46 @@
 package openapi
 
 // Schema Object
-// The Schema Object allows the definition of input and output data types.
-// These types can be objects, but also primitives and arrays. This object is
-// an extended subset of the JSON Schema Specification Wright Draft 00.
+// The Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. This object is a superset of the JSON Schema Specification Draft 2020-12.
 //
-// For more information about the properties, see JSON Schema Core and JSON
-// Schema Validation. Unless stated otherwise, the property definitions follow
-// the JSON Schema.
+// For more information about the properties, see JSON Schema Core and JSON Schema Validation.
+//
+// Unless stated otherwise, the property definitions follow those of JSON Schema and do not add any additional semantics. Where JSON Schema indicates that behavior is defined by the application (e.g. for annotations), OAS also defers the definition of semantics to the application consuming the OpenAPI document.
 //
 // Properties
-// The following properties are taken directly from the JSON Schema definition
-// and follow the same specifications:
+// The OpenAPI Schema Object dialect is defined as requiring the OAS base vocabulary, in addition to the vocabularies as specified in the JSON Schema draft 2020-12 general purpose meta-schema.
 //
-// title
-// multipleOf
-// maximum
-// exclusiveMaximum
-// minimum
-// exclusiveMinimum
-// maxLength
-// minLength
-// pattern (This string SHOULD be a valid regular expression, according to the Ecma-262 Edition 5.1 regular expression dialect)
-// maxItems
-// minItems
-// uniqueItems
-// maxProperties
-// minProperties
-// required
-// enum
+// The OpenAPI Schema Object dialect for this version of the specification is identified by the URI https://spec.openapis.org/oas/3.1/dialect/base (the "OAS dialect schema id").
 //
-// The following properties are taken from the JSON Schema definition but their
-// definitions were adjusted to the OpenAPI Specification.
+// The following properties are taken from the JSON Schema specification but their definitions have been extended by the OAS:
 //
-// type - Value MUST be a string. Multiple types via an array are not supported.
-// allOf - Inline or referenced schema MUST be of a Schema Object and not a standard JSON Schema.
-// oneOf - Inline or referenced schema MUST be of a Schema Object and not a standard JSON Schema.
-// anyOf - Inline or referenced schema MUST be of a Schema Object and not a standard JSON Schema.
-// not - Inline or referenced schema MUST be of a Schema Object and not a standard JSON Schema.
-// items - Value MUST be an object and not an array. Inline or referenced schema MUST be of a Schema Object and not a standard JSON Schema. items MUST be present if the type is array.
-// properties - Property definitions MUST be a Schema Object and not a standard JSON Schema (inline or referenced).
-// additionalProperties - Value can be boolean or object. Inline or referenced schema MUST be of a Schema Object and not a standard JSON Schema. Consistent with JSON Schema, additionalProperties defaults to true.
 // description - CommonMark syntax MAY be used for rich text representation.
 // format - See Data Type Formats for further details. While relying on JSON Schema's defined formats, the OAS offers a few additional predefined formats.
-// default - The default value represents what would be assumed by the consumer of the input as the value of the schema if one is not provided. Unlike JSON Schema, the value MUST conform to the defined type for the Schema Object defined at the same level. For example, if type is string, then default can be "foo" but cannot be 1.
-// Alternatively, any time a Schema Object can be used, a Reference Object can be used in its place. This allows referencing definitions instead of defining them inline.
+// In addition to the JSON Schema properties comprising the OAS dialect, the Schema Object supports keywords from any other vocabularies, or entirely arbitrary properties.
 //
-// Additional properties defined by the JSON Schema specification that are not
-// mentioned here are strictly unsupported.
-//
-// Other than the JSON Schema subset fields, the following fields MAY be used
-// for further schema documentation:
+// The OpenAPI Specification's base vocabulary is comprised of the following keywords:
 type Schema struct {
-	// A true value adds "null" to the allowed type specified by the type
-	// keyword, only if type is explicitly defined within the same Schema
-	// Object. Other Schema Object constraints retain their defined behavior,
-	// and therefore may disallow the use of null as a value. A false value
-	// leaves the specified or default type unmodified. The default value is
-	// false.
-	Nullable bool `json:"nullable,omitempty"`
 	// Adds support for polymorphism. The discriminator is an object name that
 	// is used to differentiate between other schemas which may satisfy the
 	// payload description. See Composition and Inheritance for more details.
 	Discriminator *Discriminator `json:"discriminator,omitempty"`
-	// Relevant only for Schema "properties" definitions. Declares the property
-	// as "read only". This means that it MAY be sent as part of a response but
-	// SHOULD NOT be sent as part of the request. If the property is marked as
-	// readOnly being true and is in the required list, the required will take
-	// effect on the response only. A property MUST NOT be marked as both
-	// readOnly and writeOnly being true. Default value is false.
-	ReadOnly bool `json:"readOnly,omitempty"`
-	// Relevant only for Schema "properties" definitions. Declares the property
-	// as "write only". Therefore, it MAY be sent as part of a request but
-	// SHOULD NOT be sent as part of the response. If the property is marked as
-	// writeOnly being true and is in the required list, the required will take
-	// effect on the request only. A property MUST NOT be marked as both
-	// readOnly and writeOnly being true. Default value is false.
-	WriteOnly bool `json:"writeOnly,omitempty"`
 	// This MAY be used only on properties schemas. It has no effect on root
 	// schemas. Adds additional metadata to describe the XML representation of
 	// this property.
 	XML *XML `json:"xml,omitempty"`
 	// Additional external documentation for this schema.
 	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty"`
-	// A free-form property to include an example of an instance for this schema.
-	// To represent examples that cannot be naturally represented in JSON or
-	// YAML, a string value can be used to contain the example with escaping
-	// where necessary.
+	// A free-form property to include an example of an instance for this 
+	// schema. To represent examples that cannot be naturally represented in 
+	// JSON or YAML, a string value can be used to contain the example with 
+	// escaping where necessary.
+	//
+	// Deprecated: The example property has been deprecated in favor of the 
+	// JSON Schema examples keyword. Use of example is discouraged, and later 
+	// versions of this specification may remove it.
 	Example interface{} `json:"example,omitempty"`
-	// Specifies that a schema is deprecated and SHOULD be transitioned out of
-	// usage. Default value is false.
-	Deprecated bool `json:"deprecated,omitempty"`
-	// This object MAY be extended with Specification Extensions.
+
+	// This object MAY be extended with Specification Extensions, though as noted, additional properties MAY omit the x- prefix within this object.
 }
 
 // Composition and Inheritance (Polymorphism)
@@ -107,6 +56,15 @@ type Schema struct {
 // Override the schema name by overriding the property with a new value. If a new value exists, this takes precedence over the schema name. As such, inline schema definitions, which do not have a given id, cannot be used in polymorphism.
 // XML Modeling
 // The xml property allows extra definitions when translating the JSON definition to XML. The XML Object contains additional information about the available options.
+
+// Specifying Schema Dialects
+// It is important for tooling to be able to determine which dialect or meta-schema any given resource wishes to be processed with: JSON Schema Core, JSON Schema Validation, OpenAPI Schema dialect, or some custom meta-schema.
+
+// The $schema keyword MAY be present in any root Schema Object, and if present MUST be used to determine which dialect should be used when processing the schema. This allows use of Schema Objects which comply with other drafts of JSON Schema than the default Draft 2020-12 support. Tooling MUST support the OAS dialect schema id, and MAY support additional values of $schema.
+
+// To allow use of a different default $schema value for all Schema Objects contained within an OAS document, a jsonSchemaDialect value may be set within the OpenAPI Object. If this default is not set, then the OAS dialect schema id MUST be used for these Schema Objects. The value of $schema within a Schema Object always overrides any default.
+
+// When a Schema Object is referenced from an external resource which is not an OAS document (e.g. a bare JSON Schema resource), then the value of the $schema keyword for schemas within that resource MUST follow JSON Schema rules.
 
 // Schema Object Examples
 // Primitive Sample
